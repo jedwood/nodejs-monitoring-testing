@@ -77,7 +77,7 @@ So let's start with a simple app that includes two routes- one that returns `hel
 
 ## Stress Testing
 
-There is of course no reason why you need to use tools written in Node to test Node apps, nor vice versa. Nevertheless, here are a couple simple ones I found by digging through [npm](https://npmjs.org/package/npm-search)
+There is of course no reason why you need to use tools written in Node to test Node apps. Nevertheless, here are a couple simple ones I found by digging through [npm](https://npmjs.org/package/npm-search)
 
 ### node-http-perf
 
