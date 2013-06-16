@@ -1,7 +1,7 @@
 Monitoring and Stress Testing Node.js Apps
 ---
 
->Using NodeFly and Bees with Machine Guns
+>Using NodeFly and simple stress testing utilities
 
 So you're sending your first real Node.js app into production. Nervous? You should be. Not because Node isn't ready, but because you haven't yet established a history of gotchas and lessons learned. Are there uncaught exceptions? Did you unknowingly write a blocking function somewhere that will only come back to bite you when your app hits the front page of Hacker News?
 
