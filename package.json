@@ -1,0 +1,25 @@
+{
+  "name": "monitoring-example",
+  "version": "0.0.1",
+  "engines": {
+    "node": "v0.8.x",
+    "npm": "1.1.x"
+  },
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "3.1.0",
+    "nconf": "~0.6.7",
+    "nodefly": "stable"
+  },
+  "description": "",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "jedwood",
+  "subdomain": "jedwood"
+}
