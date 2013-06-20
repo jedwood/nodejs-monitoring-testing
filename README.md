@@ -11,7 +11,11 @@ In this post we'll explore [NodeFly](http://nodefly.com) for reporting the perfo
 
 ![NodeFly Logo](http://nodefly.com/public/css/images/landing/hexamajig.png)
 
-Signing up for an account is really simple. After that, we just install via npm and then add a block like this before any other `require` statements:
+[Signing up](http://www.nodefly.com) for an account is really simple. After that, we just install via npm:
+
+`npm install nodefly@stable`
+
+and then add a block like this to our app code before any other `require` statements:
 
         require('nodefly').profile(
           'abc123',
