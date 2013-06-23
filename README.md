@@ -22,7 +22,7 @@ and then add a block like this to our app code before any other `require` statem
           [APPLICATION_NAME]
         );
 
-And when they say "This must be the first require before you load any modules. Otherwise you will not see data reported" they mean it. I started by first loading [nconf](https://github.com/flatiron/nconf) so that I could use a familiar way of putting the NodeFly config info in an external file. Sure enough, no data reported.
+And when they say "This must be the first require before you load any modules. Otherwise you will not see data reported" they mean it. I started by first loading [nconf](https://github.com/flatiron/nconf) so that I could use a familiar way of putting the NodeFly config info in and external file. Sure enough, no data reported.
 
 Also note that the second parameter of that `profile` method is in fact an Array. I got stuck on that during my first attempt. It allows you to also include a hostname and a process number, e.g.
 
@@ -36,40 +36,11 @@ On the how-to page, NodeFly includes customized setup snippets for Nodejitsu, He
 
 ## Sample App
 
-So let's start with a simple app that includes two routes- one that returns `hello world` and another that will cause our app to think a bit by calculating the fibonacci secquence for a variable number of iterations.
-
-        require('nodefly').profile(
-          'abc123',
-          ['NODE PaaS TEST', 'local dev']
-        );
-
-        var express = require('express'),
-            config   = require('nconf'),
-            app     = express();
-
-        config.argv().env().file({ file: '../config.json' });
-        config.defaults({'PORT': 1337, SECRET: 'default secret.'});
-
-        app.configure(function(){
-          app.set('port', config.get('PORT'));
-          app.use(express.bodyParser());
-          app.use(express.methodOverride());
-          app.use(app.router);
-          app.use(express.logger('dev'));
-          app.use(express.errorHandler());
-        });
-
-        app.get('/', function(req, res) {
-          res.send("hello world");
-        });
+So let's start with a simple app that runs the fibonacci sequence for a variable number of iterations.
 
         app.get('/block/:n', function(req, res){
           var blockres = fibonacci(parseInt(req.param('n'), 10));
           res.send("done: " + blockres);
-        });
-
-        app.listen(app.get('port'), function(){
-          console.log("Node.js Hosting Test listening on port " + config.get('PORT') + ', running in ' + app.settings.env + " mode, Node version is: " + process.version);
         });
 
         function fibonacci(n) {
@@ -104,6 +75,63 @@ While running, it increases the number of requests by 100 more per second until 
 Mike Pennisi of [bocoup](http://weblog.bocoup.com/node-stress-test-procedure/) has a great three-part write up of his experience [stress-testing a realtime Node.js app](http://weblog.bocoup.com/node-stress-test-procedure/). His focus was primarily on testing [socket.io](http://socket.io) performance. In the process, he created [a fork of Bees with Machine Guns](https://github.com/jugglinmike/beeswithmachineguns) that's worth checking out if you're looking to do some serious distributed stress testing.
 
 ---
-# Next: How the PaaS Providers Stack Up
+# How the PaaS Providers Stack Up
 
-With our sample app deployed on many different Node PaaS hosts, now we can run some of these simple tests and take a look at our NodeFly dashboard to get some insights on performance. Then we'll look at the process of scaling on each PaaS host.
+With our sample app deployed on many different Node PaaS hosts, now we can run some of these simple tests and take a look at our NodeFly dashboard to get some insights on performance.
+
+#### Nodejitsu
+    nab http://jedwood.nodejitsu.com/block/1
+    REQ NUM: 100 RTN NUM: 100 QPS: 33 BODY TRAF: 233B per second
+    REQ NUM: 300 RTN NUM: 261 QPS: 43 BODY TRAF: 299B per second
+
+    time to curl /block/42: 17.16s
+
+#### Heroku
+    nab http://jedwoodtest.herokuapp.com/block/1
+    REQ NUM: 100 RTN NUM: 100 QPS: 33 BODY TRAF: 233B per second
+    REQ NUM: 300 RTN NUM: 300 QPS: 49 BODY TRAF: 349B per second
+    REQ NUM: 600 RTN NUM: 583 QPS: 64 BODY TRAF: 453B per second
+
+    time to curl /block/42: 5.62s
+
+#### Modulus.io
+    nab http://jedwood-7762.onmodulus.net/block/1
+    REQ NUM: 100 RTN NUM: 100 QPS: 33 BODY TRAF: 233B per second
+    REQ NUM: 300 RTN NUM: 289 QPS: 48 BODY TRAF: 336B per second
+
+    time to curl /block/42: 11.10s
+
+#### AppFog
+    nab http://jedwood.aws.af.cm/block/1
+    REQ NUM: 100 RTN NUM: 100 QPS: 33 BODY TRAF: 233B per second
+    REQ NUM: 300 RTN NUM: 259 QPS: 43 BODY TRAF: 6KB per second
+
+    time to curl /block/42: 5.59s
+
+#### Windows Azure
+    nab http://jedwood.azurewebsites.net/block/1
+    REQ NUM: 100 RTN NUM: 100 QPS: 33 BODY TRAF: 233B per second
+    REQ NUM: 500 RTN NUM: 401 QPS: 66 BODY TRAF: 467B per second
+
+    time to curl /block/42: 9.74s
+
+#### dotCloud
+    nab http://jedwood-jedwood.dotcloud.com/block/1
+    REQ NUM: 100 RTN NUM: 100 QPS: 33 BODY TRAF: 233B per second
+    REQ NUM: 300 RTN NUM: 286 QPS: 47 BODY TRAF: 329B per second
+
+    time to curl /block/42: 9.93s
+
+#### EngineYard
+    nab http://204.236.233.168/block/1
+    REQ NUM: 200 RTN NUM: 200 QPS: 66 BODY TRAF: 466B per second
+    REQ NUM: 600 RTN NUM: 513 QPS: 85 BODY TRAF: 598B per second
+
+    time to curl /block/42: 7.32
+
+#### OpenShift.com
+    nab http://test-jedwood.rhcloud.com/block/1
+    REQ NUM: 100 RTN NUM: 100 QPS: 33 BODY TRAF: 233B per second
+    REQ NUM: 500 RTN NUM: 409 QPS: 68 BODY TRAF: 476B per second
+
+    time to curl /block/42: 52.70s
