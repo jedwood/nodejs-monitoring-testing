@@ -77,7 +77,16 @@ Mike Pennisi of [bocoup](http://weblog.bocoup.com/node-stress-test-procedure/) h
 ---
 # How the PaaS Providers Stack Up
 
-With our sample app deployed on many different Node PaaS hosts, now we can run some of these simple tests and take a look at our NodeFly dashboard to get some insights on performance.
+With our sample app deployed on many different Node PaaS hosts, now we can run some of these simple tests and take a look at our NodeFly dashboard to get some insights on performance. I'll be running `nab` to get a basic sense of how a traffic spike is handled. We'll follow that with a single request to `/block/42` to see how the CPU holds up.
+
+To set a baseline, here are the results from an AWS "micro" instance with a fresh installation of Node 0.10.12:
+
+#### EC2 Micro
+    nab http://ec2-23-22-0-60.compute-1.amazonaws.com/block/1
+    REQ NUM: 100 RTN NUM: 100 QPS: 33 BODY TRAF: 233B per second
+    REQ NUM: 300 RTN NUM: 284 QPS: 47 BODY TRAF: 331B per second
+
+    time to curl /block/42: 8.40
 
 #### Nodejitsu
     nab http://jedwood.nodejitsu.com/block/1
